@@ -8,6 +8,11 @@ var repoHTML = "<input type='text' name='user' value='...' " +
     "<div id='repodata'/>";
 
 var github;
+var myrepo;
+
+// function btoa(data) {
+//    return window.btoa(data);
+// };
 
 function getToken() {
     var token = $("#token").val();
@@ -25,28 +30,50 @@ function getToken() {
 function getRepo() {
     var user = $("#user").val();
     var reponame = $("#repo").val();
-    var repo = github.getRepo(user, reponame); //objeto github //variable local
-	console.log(repo);
-	console.log("***\n");
-    repo.show(showRepo);
+    myrepo = github.getRepo(user, reponame); //objeto github //variable local
+	  console.log(myrepo);
+	  console.log("***\n");
+    myrepo.show(showRepo);
 };
 
 function showRepo(error, repoJSON) {
     var repodata = $("#repodata");
     if (error) {
-	repodata.html("<p>Error code: " + error.error + "</p>");
+	    repodata.html("<p>Error code: " + error.error + "</p>");
     } else {
-	repodata.html("<p>Repo data:</p>" +
+	    repodata.html("<p>Repo data:</p>" +
 		      "<ul><li>Full name: " + repoJSON.full_name + "</li>" +
 		      "<li>Description: " + repoJSON.description + "</li>" +
 		      "<li>Created at: " + repoJSON.created_at + "</li>" +
-		      "</ul>")
-	console.log (repoJSON);
-	console.log (repoJSON.full_name, repoJSON.description, repoJSON.created_at);
-    }
+          "</ul><button type='button' id='write'>" +
+		      "Write File!</button>" +
+		      "<div id='writefile' />")
+  	  console.log (repoJSON);
+  	  console.log (repoJSON.full_name, repoJSON.description, repoJSON.created_at);
+      $("#write").click(writeFile);
+  }
+};
+
+function writeFile() {
+  myrepo.write('master', 'datafile', //rama, nombre fichero
+	      new Date().toLocaleString(), //contenido del fichero en string!!
+	      "Updating data", function(err) { //mensaje del commit, funcion si hay error
+	  console.log (err)
+	});
+  $("#writefile").html("<button type='button' id='read'>" +
+		 "Read File!</button>" +
+		 "<div id='readfile' />");
+  $("#read").click(readFile);
+};
+
+function readFile() {
+  myrepo.read('master', 'datafile', function(err, data) { //devuelve data.JSON
+	  console.log (err, data);
+	  $("#readfile").html("<p>Contents:</p><p>" + data + "</p>");
+  });
 };
 
 $(document).ready(function() {
     $("div#form button").click(getToken);
-    
+
 });
