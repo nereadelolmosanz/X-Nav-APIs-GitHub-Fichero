@@ -30,9 +30,8 @@ function getToken() {
 function getRepo() {
     var user = $("#user").val();
     var reponame = $("#repo").val();
-    myrepo = github.getRepo(user, reponame); //objeto github //variable local
+    myrepo = github.getRepo(user, reponame); //objeto github //variable NO local
 	  console.log(myrepo);
-	  console.log("***\n");
     myrepo.show(showRepo);
 };
 
