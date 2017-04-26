@@ -9,6 +9,7 @@ var repoHTML = "<input type='text' name='user' value='...' " +
 
 var github;
 var myrepo;
+var datafile;
 
 // function btoa(data) {
 //    return window.btoa(data);
@@ -44,7 +45,13 @@ function showRepo(error, repoJSON) {
 		      "<ul><li>Full name: " + repoJSON.full_name + "</li>" +
 		      "<li>Description: " + repoJSON.description + "</li>" +
 		      "<li>Created at: " + repoJSON.created_at + "</li>" +
-          "</ul><button type='button' id='write'>" +
+              "</ul><p>Let's write:</p>" + 
+              "<p>File name | Content...</p>" + 
+              "<input type='text' name='File name' value='' " +
+              "id='fileName' size='15' />" +
+              "<input type='text' name='Content' value='' " +
+              "id='textWrite' size='40' />" +
+              "<button type='button' id='write'>" +
 		      "Write File!</button>" +
 		      "<div id='writefile' />")
   	  console.log (repoJSON);
@@ -54,8 +61,10 @@ function showRepo(error, repoJSON) {
 };
 
 function writeFile() {
-  myrepo.write('master', 'datafile', //rama, nombre fichero
-	      new Date().toLocaleString(), //contenido del fichero en string!!
+  var textWrite = $("#textWrite").val();
+  datafile = $("#fileName").val();
+  myrepo.write('master', datafile, //rama, nombre fichero
+	      textWrite, //contenido del fichero en string!!
 	      "Updating data", function(err) { //mensaje del commit, funcion si hay error
 	  console.log (err)
 	});
@@ -66,7 +75,7 @@ function writeFile() {
 };
 
 function readFile() {
-  myrepo.read('master', 'datafile', function(err, data) { //devuelve data.JSON
+  myrepo.read('master', datafile, function(err, data) { //devuelve data.JSON
 	  console.log (err, data);
 	  $("#readfile").html("<p>Contents:</p><p>" + data + "</p>");
   });
